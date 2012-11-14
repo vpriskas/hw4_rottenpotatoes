@@ -46,11 +46,7 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
-  def edit
-    @movie = Movie.find params[:id]
-  end
-
-  def update
+ def update
     @movie = Movie.find params[:id]
     @movie.update_attributes!(params[:movie])
     flash[:notice] = "#{@movie.title} was successfully updated."
@@ -63,5 +59,29 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
+
+  def directed
+     @movie = Movie.find params[:id]
+    #director = params[:director].sub("_"," ")
+    director = @movie.director
+    @director = director
+    
+    #@title2 = params[:title2]
+    title2 = @movie.title
+   if director.nil?
+     flash[:notice] = "#{@movie.title} has no director info!"
+     redirect_to movies_path and return
+   end
+    @movies = Movie.find_director_movies(director)
+    if @movies.nil? 
+	redirect_to movies_path and return
+    end
+  end
+
+  def edit
+    @movie = Movie.find params[:id]
+  end
+
+ 
 
 end
